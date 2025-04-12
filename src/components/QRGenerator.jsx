@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import QRCode from "react-qr-code";
-
+import { toPng } from "html-to-image";
+import axios from "axios";
+import { GENERATE_QR } from "../auth/api";
 
 const QRGenerator = () => {
   const [formData, setFormData] = useState({
@@ -11,35 +13,60 @@ const QRGenerator = () => {
     specs: "",
   });
   const [qrValue, setQrValue] = useState("");
-
+  const qrRef = useRef(null);
+       console.log(formData);
+                                              
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...formData };
     if (payload.type === "part") {
-      payload.specs = JSON.parse(payload.specs || '{}');
+      payload.specs = payload.specs
     } else {
       delete payload.vehicleId;
       delete payload.specs;
     }
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post(GENERATE_QR,formData)
+console.log(res);
 
-      if (res.ok) {
+      if (res.statusText==='OK') {
         setQrValue(formData.id);
         alert("Saved and QR generated");
       }
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleDownload = () => {
+    if (!qrRef.current) return;
+
+    toPng(qrRef.current, { cacheBust: true, pixelRatio: 2 })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = `${formData.id || "qr-code"}.png`;
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.error("Failed to download PNG:", err);
+      });
+  };
+
+  const handleClear = () => {
+    setFormData({
+      type: "vehicle",
+      id: "",
+      name: "",
+      vehicleId: "",
+      specs: "",
+    });
+    setQrValue("");
   };
 
   return (
@@ -71,31 +98,51 @@ const QRGenerator = () => {
         />
         {formData.type === "part" && (
           <>
-            <input
+            {/* <input
               name="vehicleId"
               placeholder="Vehicle ID"
               className="w-full border p-2 rounded"
               value={formData.vehicleId}
               onChange={handleChange}
-            />
+            /> */}
             <textarea
               name="specs"
-              placeholder='Specs (JSON format)'
+              placeholder='Specs'
               className="w-full border p-2 rounded"
               value={formData.specs}
               onChange={handleChange}
             />
           </>
         )}
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Generate QR
-        </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Generate QR
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="bg-gray-500 text-white px-4 py-2 rounded"
+            >
+              Clear
+            </button>
+          </div>
       </form>
 
       {qrValue && (
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <p className="mb-2">Generated QR:</p>
-          <QRCode value={qrValue} size={200} />
+          <div ref={qrRef} className="inline-block bg-white p-2 rounded">
+            <QRCode value={qrValue} size={200} />
+          </div>
+          <button
+            onClick={handleDownload}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Download as PNG
+          </button>
         </div>
       )}
     </div>

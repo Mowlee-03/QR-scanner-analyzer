@@ -8,15 +8,15 @@ const Home = () => {
         <h1 className="text-4xl font-bold text-gray-800">Welcome to the QR Code System</h1>
         <p className="text-lg text-gray-600">Choose an option below to get started:</p>
         <div className="mt-6 flex justify-center space-x-4">
-          {/* <Link to="analyze" className="bg-orange-400 p-3 rounded-md hover:bg-black hover:text-white transition-all duration-75">
+          <Link to="analyze" className="bg-orange-400 p-3 rounded-md hover:bg-black hover:text-white transition-all duration-75">
             Analyze
           </Link>
-          <Link to="scan" className="bg-orange-400 p-3 rounded-md hover:bg-black hover:text-white transition-all duration-75">
+          {/* <Link to="scan" className="bg-orange-400 p-3 rounded-md hover:bg-black hover:text-white transition-all duration-75">
             Internal Scan
-          </Link>
+          </Link> */}
           <Link to="generate" className="bg-orange-400 p-3 rounded-md hover:bg-black hover:text-white transition-all duration-75">
             Generate
-          </Link> */}
+          </Link>
         </div>
       </div>
       

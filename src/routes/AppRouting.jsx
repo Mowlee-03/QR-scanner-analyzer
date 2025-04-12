@@ -5,6 +5,7 @@ import Home from '../pages/Home'
 import QRGenerator from '../components/QRGenerator'
 import QRScanner from '../components/QRScanner'
 import UniversalAnalyzer from '../components/UniversalAnalyzer'
+import QRScannerInput from '../components/QRscannerInput'
 
 const AppRouting = () => {
   return (
@@ -16,6 +17,7 @@ const AppRouting = () => {
             <Route path="generate" element={<QRGenerator />} />
             <Route path="scan" element={<QRScanner />} />
             <Route path="analyze" element={<UniversalAnalyzer />} />
+            <Route path="device_scanner" element={<QRScannerInput/>} />
           </Route>
           
 
