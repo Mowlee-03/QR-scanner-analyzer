@@ -10,17 +10,19 @@ import QRScannerInput from '../components/QRscannerInput'
 const AppRouting = () => {
   return (
     <Routes>
-        <Route path="/login" element={<Login />} />
-     
-          <Route index element={<Navigate to="/home/analyze" replace />} />
-          <Route path='/home' element={<Home/>}>
-            <Route path="generate" element={<QRGenerator />} />
-            <Route path="scan" element={<QRScanner />} />
-            <Route path="analyze" element={<UniversalAnalyzer />} />
-            <Route path="device_scanner" element={<QRScannerInput/>} />
-          </Route>
-          
+      <Route path="/login" element={<Login />} />
 
+      <Route path="/" element={<Navigate to="/home/analyze" replace />} />
+      
+      <Route path="/home" element={<Home />}>
+        <Route path="generate" element={<QRGenerator />} />
+        <Route path="scan" element={<QRScanner />} />
+        <Route path="analyze" element={<UniversalAnalyzer />} />
+        <Route path="device_scanner" element={<QRScannerInput />} />
+      </Route>
+
+      {/* Fallback route for any unknown paths */}
+      <Route path="*" element={<Navigate to="/home/analyze" replace />} />
     </Routes>
   )
 }
